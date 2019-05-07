@@ -11,6 +11,12 @@ import StartAudioContext from "startaudiocontext";
 To-Do
 */
 
+/*
+ * Questions
+ ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ??
+ ** how does e.preventDefault() work on top and bottom row of step sequencer ??
+ */
+
 const synth = new Tone.PolySynth(2, Tone.Synth).toMaster();
 
 // this may be unnecessary
@@ -203,7 +209,7 @@ class App extends Component {
     // make copy of rendered notes and erase everything
     const renderedNotes = [];
     const matrix = this.readCheckboxes();
-    console.log("updated matrix" + matrix);
+    console.log("updated matrix: " + matrix);
     for (let i = 0; i < metLength; i++) {
       if (timeSig[1] <= 4 && i % (beatTicks / 2) === 0) {
         if (matrix[0][i / (beatTicks / 2)] === 1) {
@@ -254,13 +260,11 @@ class App extends Component {
   }
 
   generateStepSequence() {
-    console.log("updating top row");
-    const topRow = document.querySelector(".top-row");
-    // console.log(topRow);
     const timeSig = this.state.timeSig;
-    // console.log(timeSig);
     const matrix = this.generateSeqMatrix();
-    console.log(matrix);
+
+    console.log("updating top row checkboxes");
+    const topRow = document.querySelector(".top-row");
     if (timeSig[1] >= 8) {
       topRow.innerHTML = "";
       for (let i = 0; i < timeSig[0]; i++) {
@@ -274,10 +278,6 @@ class App extends Component {
         element.className = "top-row-btn";
         element.checked = i === 0 ? true : false;
         element.setAttribute("highlighted", false);
-        element.onclick = () => {
-          this.updateTopRow();
-          this.updateMetronome();
-        };
         const label = document.createElement("label");
         label.key = "tk" + i;
         label.setAttribute("for", "tr" + i);
@@ -303,10 +303,6 @@ class App extends Component {
         element.className = "top-row-btn";
         element.checked = matrix[0] === 1 && i === 0 ? true : false;
         element.setAttribute("highlighted", false);
-        element.onclick = () => {
-          this.updateTopRow();
-          this.updateMetronome();
-        };
         const label = document.createElement("label");
         label.key = "tk" + i;
         label.setAttribute("for", "tr" + i);
@@ -321,11 +317,8 @@ class App extends Component {
       }
     }
 
-    console.log("updating bottom row");
+    console.log("updating bottom row checkboxes");
     const bottomRow = document.querySelector(".bottom-row");
-    // console.log(bottomRow);
-
-    console.log(matrix);
     if (timeSig[1] >= 8) {
       bottomRow.innerHTML = "";
       for (let i = 0; i < timeSig[0]; i++) {
@@ -338,7 +331,6 @@ class App extends Component {
         element.id = "br" + i;
         element.className = "bottom-row-btn";
         element.checked = matrix[i] === 1 && i !== 0 ? true : false;
-        element.onclick = () => this.updateBottomRow();
         const label = document.createElement("label");
         label.key = "bk" + i;
         label.setAttribute("for", "br" + i);
@@ -363,7 +355,6 @@ class App extends Component {
         element.id = "br" + i;
         element.className = "bottom-row-btn";
         element.checked = matrix[i] === 1 && i !== 0 ? true : false;
-        element.onclick = () => this.updateBottomRow();
         const label = document.createElement("label");
         label.key = "bk" + i;
         label.setAttribute("for", "br" + i);
@@ -402,28 +393,6 @@ class App extends Component {
     //     progressBar.appendChild(element);
     //   }
     // }
-  }
-
-  updateTopRow() {
-    console.log("updating top row");
-    const topRow = document.querySelector(".top-row");
-    // console.log(topRow);
-    const timeSig = this.state.timeSig;
-    // console.log(timeSig);
-    const matrix = this.generateSeqMatrix();
-    const finalMatrix = this.readCheckboxes(matrix);
-    console.log(finalMatrix);
-  }
-
-  updateBottomRow() {
-    console.log("updating bottom row");
-    const bottomRow = document.querySelector(".bottom-row");
-    // console.log(bottomRow);
-    const timeSig = this.state.timeSig;
-    // console.log(timeSig);
-    const matrix = this.generateSeqMatrix();
-    const finalMatrix = this.readCheckboxes(matrix);
-    console.log(finalMatrix);
   }
 
   // computes a matrix based upon the current state of the step sequencer
@@ -555,8 +524,6 @@ class App extends Component {
           // exportMeasure={this.exportMeasure.bind(this)}
         />
         <StepSequence
-          updateTopRow={this.updateTopRow.bind(this)}
-          updateBottomRow={this.updateBottomRow.bind(this)}
           generateStepSequence={this.generateStepSequence.bind(this)}
           updateMetronome={this.updateMetronome.bind(this)}
         />
