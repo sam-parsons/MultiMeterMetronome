@@ -1,20 +1,22 @@
 import React, { Component } from "react";
 import "./App.css";
 import Dimension from "./Components/Dimension.js";
-// import Sequence from "./Components/Sequence.js";
 import StepSequence from "./Components/StepSequence.js";
-// import MeasureContainer from "./Components/MeasureContainer.js";
 import Tone from "tone";
 import StartAudioContext from "startaudiocontext";
 
 /*
 To-Do
+- make step sequencer look better
+- clean up logic of generateStepSequence
 */
 
 /*
  * Questions
  ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ??
+ ** how to use a ternary operator at the end of togglePlaying() ? - NOT IMPORTANT
  ** how does e.preventDefault() work on top and bottom row of step sequencer ??
+ ** where to start to add tests ??
  */
 
 const synth = new Tone.PolySynth(2, Tone.Synth).toMaster();
@@ -195,11 +197,6 @@ class App extends Component {
     const metronomeContainer = this.state.metronomeContainer;
     metronomeContainer.forEach(part => part.removeAll());
 
-    // clear sequences as well
-    // const sequenceContainer = this.state.sequenceContainer;
-    // const seqPartContainer = this.state.seqPartContainer;
-    // seqPartContainer.forEach(part => part.removeAll());
-
     // metronome vitals
     const timeSig = this.state.timeSig;
     const notes = this.state.notes;
@@ -252,10 +249,6 @@ class App extends Component {
     this.setState({
       renderedNotes,
       metronomeContainer
-      // sequenceIndex: 0,
-      // seqPartContainer: seqPartContainer,
-      // sequenceContainer: sequenceContainer,
-      // seqContainerSize: 0
     });
   }
 
@@ -368,31 +361,6 @@ class App extends Component {
         bottomRow.appendChild(div);
       }
     }
-
-    // console.log("updating progress bar");
-    // const progressBar = document.querySelector(".progress-bar");
-
-    // if (timeSig[1] >= 8) {
-    //   progressBar.innerHTML = "";
-    //   for (let i = 0; i < timeSig[0]; i++) {
-    //     const element = document.createElement("input");
-    //     element.type = "checkbox";
-    //     element.key = "a" + i;
-    //     element.id = "id" + i;
-    //     element.onclick = () => console.log("checkbox button clicked");
-    //     progressBar.appendChild(element);
-    //   }
-    // } else if (timeSig[1] <= 4) {
-    //   progressBar.innerHTML = "";
-    //   for (let i = 0; i < timeSig[0] * 2; i++) {
-    //     const element = document.createElement("input");
-    //     element.type = "checkbox";
-    //     element.key = "b" + i;
-    //     element.id = "id" + i;
-    //     element.onclick = () => console.log("checkbox button clicked");
-    //     progressBar.appendChild(element);
-    //   }
-    // }
   }
 
   // computes a matrix based upon the current state of the step sequencer
@@ -443,7 +411,7 @@ class App extends Component {
     }
   }
 
-  // need to comment this
+  // generates a generic matrix for new time signatures
   generateSeqMatrix() {
     console.log("generating step sequence matrix");
     const [numerator, denominator] = this.state.timeSig;
@@ -465,8 +433,6 @@ class App extends Component {
     }
     return finalMatrix;
   }
-
-  // ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ??
 
   // calculates phrase length of given time signature at 32nd resolution
   calcMetLength() {
@@ -521,25 +487,11 @@ class App extends Component {
           restartPlaying={this.restartPlaying.bind(this)}
           bpm={this.state.bpm}
           updateBPM={this.updateBPM.bind(this)}
-          // exportMeasure={this.exportMeasure.bind(this)}
         />
         <StepSequence
           generateStepSequence={this.generateStepSequence.bind(this)}
           updateMetronome={this.updateMetronome.bind(this)}
         />
-        {/* <div className="sequence-section">
-          <h3>Measure Sequencer</h3>
-        </div>
-        <Sequence
-        // generateSequence={this.generateSequence.bind(this)}
-        // seqIsPlaying={this.state.seqIsPlaying}
-        // loopStatus={this.state.loopStatus}
-        // clearSequence={this.clearSequence.bind(this)}
-        // sequenceContainer={this.state.sequenceContainer}
-        // playSequence={this.playSequence.bind(this)}
-        // updateSeqLoop={this.updateSeqLoop.bind(this)}
-        />
-        <MeasureContainer /> */}
       </div>
     );
   }
