@@ -9,7 +9,9 @@ class NumBeats extends React.Component {
           defaultValue="4"
           onChange={() => {
             this.props.updateTimeSig();
-            // this.props.generateMetronome(); // taken care of in app.js
+            if (this.props.playing) {
+              this.props.restartPlaying();
+            }
           }}
         >
           <option value="2">2</option>
@@ -29,8 +31,8 @@ class NumBeats extends React.Component {
           <option value="16">16</option>
           <option value="17">17</option>
           <option value="18">18</option>
-          <option value="20">20</option>
           <option value="19">19</option>
+          <option value="20">20</option>
         </select>
         <div id="num-beats-desc"># of beats</div>
       </div>
@@ -39,10 +41,3 @@ class NumBeats extends React.Component {
 }
 
 export default NumBeats;
-
-/**
- * 					type="number"
- * 					min="2"
-					max="20"
-					defaultValue="4"
- */

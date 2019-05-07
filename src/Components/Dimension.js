@@ -1,6 +1,6 @@
 import React from "react";
 import NumBeats from "./Dimension/NumBeats.js";
-import RecordButton from "./Dimension/RecordButton.js";
+// import RecordButton from "./Dimension/RecordButton.js";
 import Subdivision from "./Dimension/Subdivision.js";
 import PlayStopButton from "./Dimension/PlayStopButton.js";
 import TempoSlider from "./Dimension/TempoSlider.js";
@@ -11,13 +11,18 @@ class Dimension extends React.Component {
       <div className="dimension">
         <div className="time-signature">
           <NumBeats
+            playing={this.props.playing}
             timeSig={this.props.timeSig}
             updateTimeSig={this.props.updateTimeSig}
-            generateMetronome={this.props.generateMetronome}
+            updateMetronome={this.props.updateMetronome}
+            restartPlaying={this.props.restartPlaying}
           />
           <Subdivision
+            playing={this.props.playing}
             timeSig={this.props.timeSig}
             updateTimeSig={this.props.updateTimeSig}
+            restartPlaying={this.props.restartPlaying}
+            updateMetronome={this.props.updateMetronome}
           />
         </div>
         <div className="play-export">
@@ -26,7 +31,7 @@ class Dimension extends React.Component {
             playing={this.props.playing}
             updateMetronome={this.props.updateMetronome}
           />
-          <RecordButton exportMeasure={this.props.exportMeasure} />
+          {/* <RecordButton exportMeasure={this.props.exportMeasure} /> */}
         </div>
         <TempoSlider updateBPM={this.props.updateBPM} bpm={this.props.bpm} />
       </div>

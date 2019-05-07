@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./App.css";
-import Transport from "./Components/Transport.js";
 import Dimension from "./Components/Dimension.js";
 // import Sequence from "./Components/Sequence.js";
 import StepSequence from "./Components/StepSequence.js";
@@ -10,7 +9,6 @@ import StartAudioContext from "startaudiocontext";
 
 /*
 To-Do
-- make updateTimeSig a dynamic operation - performed while playing
 */
 
 const synth = new Tone.PolySynth(2, Tone.Synth).toMaster();
@@ -24,22 +22,22 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      playing: false,
+      bpm: 120,
+      loopStatus: false,
+      notes: ["C5", "EB5"],
       timeSig: [4, 4],
       renderedNotes: [],
       metronomeContainer: [], // holds Part for future stoppage and erasal
+      tempDivisor: 4,
+      placement: 0,
+      visualizeIndex: 0,
+      eventCache: [],
       sequenceContainer: [],
       seqContainerSize: 0,
       sequenceIndex: 0,
       seqIsPlaying: false,
-      seqPartContainer: [],
-      loopStatus: false,
-      notes: ["C5", "EB5"],
-      tempDivisor: 4,
-      placement: 0,
-      playing: false,
-      bpm: 120,
-      visualizeIndex: 0,
-      eventCache: []
+      seqPartContainer: []
     };
   }
 
@@ -82,12 +80,37 @@ class App extends Component {
     // );
   }
 
+  restartPlaying() {
+    if (this.state.playing) {
+      this.setState({ playing: true, seqIsPlaying: false }, () => {
+        //stop transport
+        Tone.Transport.stop();
+        console.log("playing stopped");
+
+        // turn off looping - prevents collision with measure sequence loop
+        Tone.Transport.loop = false;
+        Tone.Transport.loopEnd = 0;
+
+        // configure looping for step sequencer
+        Tone.Transport.loopStart = 0;
+        Tone.Transport.loopEnd =
+          this.calcMetLength() / (this.state.bpm * (8 / 60)); // magic equation
+        Tone.Transport.loop = true;
+
+        // start transport after loop config
+        Tone.Transport.start("+0.0");
+        console.log("playing restarted");
+      });
+    } else {
+      console.error("restartPlaying called while not playing");
+    }
+  }
+
   updateBPM() {
     const slider = document.querySelector("#tempo-sld").value;
     document.querySelector(
       "#tempo-value-header"
     ).innerHTML = `Quarter notes per minute: ${slider}`;
-    // console.log('updating bpm to ' + slider);
     this.setState(
       {
         bpm: parseInt(slider)
@@ -99,8 +122,8 @@ class App extends Component {
   }
 
   updateTimeSig() {
+    // retrieve time signature values from select elements
     const top = document.querySelector("#num-beats-input");
-    // redo this with new select tag
     const bottom = document.querySelector("#subdivision-input");
     this.setState(
       {
@@ -355,41 +378,60 @@ class App extends Component {
       }
     }
 
-    console.log("updating progress bar");
-    const progressBar = document.querySelector(".progress-bar");
-    // console.log(progressBar);
+    // console.log("updating progress bar");
+    // const progressBar = document.querySelector(".progress-bar");
 
-    if (timeSig[1] >= 8) {
-      progressBar.innerHTML = "";
-      for (let i = 0; i < timeSig[0]; i++) {
-        const element = document.createElement("input");
-        element.type = "checkbox";
-        element.key = "a" + i;
-        element.id = "id" + i;
-        element.onclick = () => console.log("checkbox button clicked");
-        progressBar.appendChild(element);
-      }
-    } else if (timeSig[1] <= 4) {
-      progressBar.innerHTML = "";
-      for (let i = 0; i < timeSig[0] * 2; i++) {
-        const element = document.createElement("input");
-        element.type = "checkbox";
-        element.key = "b" + i;
-        element.id = "id" + i;
-        element.onclick = () => console.log("checkbox button clicked");
-        progressBar.appendChild(element);
-      }
-    }
+    // if (timeSig[1] >= 8) {
+    //   progressBar.innerHTML = "";
+    //   for (let i = 0; i < timeSig[0]; i++) {
+    //     const element = document.createElement("input");
+    //     element.type = "checkbox";
+    //     element.key = "a" + i;
+    //     element.id = "id" + i;
+    //     element.onclick = () => console.log("checkbox button clicked");
+    //     progressBar.appendChild(element);
+    //   }
+    // } else if (timeSig[1] <= 4) {
+    //   progressBar.innerHTML = "";
+    //   for (let i = 0; i < timeSig[0] * 2; i++) {
+    //     const element = document.createElement("input");
+    //     element.type = "checkbox";
+    //     element.key = "b" + i;
+    //     element.id = "id" + i;
+    //     element.onclick = () => console.log("checkbox button clicked");
+    //     progressBar.appendChild(element);
+    //   }
+    // }
   }
 
+  updateTopRow() {
+    console.log("updating top row");
+    const topRow = document.querySelector(".top-row");
+    // console.log(topRow);
+    const timeSig = this.state.timeSig;
+    // console.log(timeSig);
+    const matrix = this.generateSeqMatrix();
+    const finalMatrix = this.readCheckboxes(matrix);
+    console.log(finalMatrix);
+  }
+
+  updateBottomRow() {
+    console.log("updating bottom row");
+    const bottomRow = document.querySelector(".bottom-row");
+    // console.log(bottomRow);
+    const timeSig = this.state.timeSig;
+    // console.log(timeSig);
+    const matrix = this.generateSeqMatrix();
+    const finalMatrix = this.readCheckboxes(matrix);
+    console.log(finalMatrix);
+  }
+
+  // computes a matrix based upon the current state of the step sequencer
   readCheckboxes(array) {
     console.log("reading checkboxes");
     if (!array) {
       const topRowButtons = document.querySelectorAll(".top-row-btn");
       const bottomRowButtons = document.querySelectorAll(".bottom-row-btn");
-      // console.log(topRowButtons);
-      // console.log(bottomRowButtons);
-      // const matrix = this.generateSeqMatrix();
       const topArray = [];
       const bottomArray = [];
       for (let i = 0; i < topRowButtons.length; i++) {
@@ -411,8 +453,6 @@ class App extends Component {
     } else {
       const topRowButtons = document.querySelectorAll(".top-row-btn");
       const bottomRowButtons = document.querySelectorAll(".bottom-row-btn");
-      console.log(topRowButtons);
-      console.log(bottomRowButtons);
       const topArray = [];
       const bottomArray = [];
       for (let i = 0; i < topRowButtons.length; i++) {
@@ -430,22 +470,23 @@ class App extends Component {
           bottomArray.push(0);
         }
       }
-      const finalMatrix = [topArray, bottomArray];
-      return finalMatrix;
+      return [topArray, bottomArray];
     }
   }
 
+  // need to comment this
   generateSeqMatrix() {
-    const timeSig = this.state.timeSig;
+    console.log("generating step sequence matrix");
+    const [numerator, denominator] = this.state.timeSig;
     const finalMatrix = [];
-    console.log("timeSig: " + timeSig[0] + " " + timeSig[1]);
-
-    if (timeSig[1] === 16 || timeSig[1] === 8 || timeSig[1] === 32) {
-      for (let i = 0; i < timeSig[0]; i++) {
+    // 8ths, 16ths, and 32nds matrices length determined by numerator
+    // half and quarters matrices length twice as long to incorporate rhythmic level below
+    if (denominator === 16 || denominator === 8 || denominator === 32) {
+      for (let i = 0; i < numerator; i++) {
         i % 2 === 0 ? finalMatrix.push(1) : finalMatrix.push(0);
       }
-    } else if (timeSig[1] === 4 || timeSig[1] === 2) {
-      for (let i = 0; i < timeSig[0] * 2; i++) {
+    } else if (denominator === 4 || denominator === 2) {
+      for (let i = 0; i < numerator * 2; i++) {
         if (i % 2 === 0) {
           finalMatrix.push(1);
         } else {
@@ -453,7 +494,6 @@ class App extends Component {
         }
       }
     }
-    console.dir(finalMatrix.length);
     return finalMatrix;
   }
 
@@ -499,24 +539,26 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <span id="info-span">Sam Parsons ©2018</span>
+        <span id="info-span">Sam Parsons ©2019</span>
         <div className="title">
           <h3>Multimeter Metronome</h3>
         </div>
-        <Transport />
         <Dimension
           timeSig={this.state.timeSig}
           updateTimeSig={this.updateTimeSig.bind(this)}
-          // exportMeasure={this.exportMeasure.bind(this)}
           updateMetronome={this.updateMetronome.bind(this)}
-          togglePlaying={this.togglePlaying.bind(this)}
           playing={this.state.playing}
+          togglePlaying={this.togglePlaying.bind(this)}
+          restartPlaying={this.restartPlaying.bind(this)}
           bpm={this.state.bpm}
           updateBPM={this.updateBPM.bind(this)}
+          // exportMeasure={this.exportMeasure.bind(this)}
         />
         <StepSequence
-        // updateTopRow={this.updateTopRow.bind(this)}
-        // generateStepSequence={this.generateStepSequence.bind(this)}
+          updateTopRow={this.updateTopRow.bind(this)}
+          updateBottomRow={this.updateBottomRow.bind(this)}
+          generateStepSequence={this.generateStepSequence.bind(this)}
+          updateMetronome={this.updateMetronome.bind(this)}
         />
         {/* <div className="sequence-section">
           <h3>Measure Sequencer</h3>

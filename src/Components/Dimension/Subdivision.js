@@ -7,7 +7,12 @@ class Subdivision extends React.Component {
         <select
           id="subdivision-input"
           defaultValue="2"
-          onChange={() => this.props.updateTimeSig()}
+          onChange={() => {
+            this.props.updateTimeSig();
+            if (this.props.playing) {
+              this.props.restartPlaying();
+            }
+          }}
         >
           <option value="1">2</option>
           <option value="2">4</option>
@@ -22,10 +27,3 @@ class Subdivision extends React.Component {
 }
 
 export default Subdivision;
-
-/**
- * 					type="range"
-					min="1"
-					max="5"
-					defaultValue="2"
- */
