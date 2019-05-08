@@ -9,6 +9,9 @@ import StartAudioContext from "startaudiocontext";
 To-Do
 - make step sequencer look better
 - clean up logic of generateStepSequence
+- rework generateSeqMatrix conditional
+- rework for loop of readCheckboxes
+- rework restartPlaying logic
 */
 
 /*
@@ -16,6 +19,7 @@ To-Do
  ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ??
  ** how to use a ternary operator at the end of togglePlaying() ? - NOT IMPORTANT
  ** how does e.preventDefault() work on top and bottom row of step sequencer ??
+ ** why no work on phone ??
  */
 
 const synth = new Tone.PolySynth(2, Tone.Synth).toMaster();
@@ -39,12 +43,7 @@ class App extends Component {
       tempDivisor: 4,
       placement: 0,
       visualizeIndex: 0,
-      eventCache: [],
-      sequenceContainer: [],
-      seqContainerSize: 0,
-      sequenceIndex: 0,
-      seqIsPlaying: false,
-      seqPartContainer: []
+      eventCache: []
     };
   }
 
@@ -115,6 +114,7 @@ class App extends Component {
 
   updateBPM() {
     const slider = document.querySelector("#tempo-sld").value;
+    // set slider label
     document.querySelector(
       "#tempo-value-header"
     ).innerHTML = `Quarter notes per minute: ${slider}`;
@@ -254,9 +254,12 @@ class App extends Component {
   generateStepSequence() {
     const timeSig = this.state.timeSig;
     const matrix = this.generateSeqMatrix();
+    const topRow = document.querySelector(".top-row");
+    const bottomRow = document.querySelector(".bottom-row");
 
     console.log("updating top row checkboxes");
-    const topRow = document.querySelector(".top-row");
+    // conditionals based on time signature divisor
+    // - halves and quarters are twice as many checkboxes as the numerator to accomodate one rhythmic level below (halves and quarters / quarters and eighths)
     if (timeSig[1] >= 8) {
       topRow.innerHTML = "";
       for (let i = 0; i < timeSig[0]; i++) {
@@ -310,7 +313,6 @@ class App extends Component {
     }
 
     console.log("updating bottom row checkboxes");
-    const bottomRow = document.querySelector(".bottom-row");
     if (timeSig[1] >= 8) {
       bottomRow.innerHTML = "";
       for (let i = 0; i < timeSig[0]; i++) {
@@ -366,8 +368,10 @@ class App extends Component {
   readCheckboxes(array) {
     console.log("reading checkboxes");
     if (!array) {
+      // gather current checkboxes
       const topRowButtons = document.querySelectorAll(".top-row-btn");
       const bottomRowButtons = document.querySelectorAll(".bottom-row-btn");
+      // create new arrays
       const topArray = [];
       const bottomArray = [];
       for (let i = 0; i < topRowButtons.length; i++) {
@@ -387,8 +391,10 @@ class App extends Component {
       }
       return [topArray, bottomArray];
     } else {
+      // gather current checkboxes
       const topRowButtons = document.querySelectorAll(".top-row-btn");
       const bottomRowButtons = document.querySelectorAll(".bottom-row-btn");
+      // create new arrays
       const topArray = [];
       const bottomArray = [];
       for (let i = 0; i < topRowButtons.length; i++) {
@@ -417,6 +423,7 @@ class App extends Component {
     const finalMatrix = [];
     // 8ths, 16ths, and 32nds matrices length determined by numerator
     // half and quarters matrices length twice as long to incorporate rhythmic level below
+    // possibly rework the conditionals with >= and <=
     if (denominator === 16 || denominator === 8 || denominator === 32) {
       for (let i = 0; i < numerator; i++) {
         i % 2 === 0 ? finalMatrix.push(1) : finalMatrix.push(0);
@@ -448,7 +455,7 @@ class App extends Component {
       case 32:
         return tempMultiplier;
       default:
-        return 8 * tempMultiplier; // find a better default statement
+        return 8 * tempMultiplier;
     }
   }
 
@@ -466,7 +473,7 @@ class App extends Component {
       case 32:
         return 1;
       default:
-        return 8; // find a better default statement
+        return 8;
     }
   }
 
