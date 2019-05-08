@@ -1,6 +1,5 @@
 import React from "react";
 import NumBeats from "./Dimension/NumBeats.js";
-// import RecordButton from "./Dimension/RecordButton.js";
 import Subdivision from "./Dimension/Subdivision.js";
 import PlayStopButton from "./Dimension/PlayStopButton.js";
 import TempoSlider from "./Dimension/TempoSlider.js";
@@ -31,7 +30,6 @@ class Dimension extends React.Component {
             playing={this.props.playing}
             updateMetronome={this.props.updateMetronome}
           />
-          {/* <RecordButton exportMeasure={this.props.exportMeasure} /> */}
         </div>
         <TempoSlider updateBPM={this.props.updateBPM} bpm={this.props.bpm} />
       </div>

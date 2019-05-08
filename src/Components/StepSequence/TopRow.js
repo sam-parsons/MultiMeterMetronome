@@ -6,8 +6,7 @@ class TopRow extends React.Component {
       <div
         className="top-row"
         onClick={e => {
-          console.log("top row triggered");
-          e.preventDefault(); // ** WHY DOES THIS WORK ??
+          //   e.preventDefault(); // ** WHY DOES THIS WORK ??
           this.props.updateMetronome();
         }}
       />

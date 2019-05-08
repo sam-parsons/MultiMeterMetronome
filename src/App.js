@@ -16,7 +16,6 @@ To-Do
  ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ??
  ** how to use a ternary operator at the end of togglePlaying() ? - NOT IMPORTANT
  ** how does e.preventDefault() work on top and bottom row of step sequencer ??
- ** where to start to add tests ??
  */
 
 const synth = new Tone.PolySynth(2, Tone.Synth).toMaster();

@@ -54,7 +54,7 @@ button {
   font-size: 8px;
   margin-bottom: 10%;
   position: relative;
-  left: 16%;
+  /* left: 16%; */
 }
 
 #num-beats-desc {
@@ -164,7 +164,7 @@ input[type="checkbox"].bottom-row-btn:checked + label {
 }
 
 .highlight {
-  background-color: cyan;
+  background-color: #fff;
   height: 20px;
   width: 15px;
 }

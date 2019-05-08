@@ -6,8 +6,8 @@ class BottomRow extends React.Component {
       <div
         className="bottom-row"
         onClick={e => {
-          e.preventDefault(); // ** WHY DOES THIS WORK ??
           this.props.updateMetronome();
+          //   e.preventDefault(); // ** WHY DOES THIS WORK ??
         }}
       />
     );
