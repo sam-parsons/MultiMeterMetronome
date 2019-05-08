@@ -9,9 +9,7 @@ import StartAudioContext from "startaudiocontext";
 To-Do
 - make step sequencer look better
 - clean up logic of generateStepSequence
-- rework generateSeqMatrix conditional
-- rework for loop of readCheckboxes
-- rework restartPlaying logic
+- change step sequencer bottom row height so it does not trigger when clicking top row
 */
 
 /*
@@ -19,7 +17,6 @@ To-Do
  ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ??
  ** how to use a ternary operator at the end of togglePlaying() ? - NOT IMPORTANT
  ** how does e.preventDefault() work on top and bottom row of step sequencer ??
- ** why no work on phone ??
  */
 
 const synth = new Tone.PolySynth(2, Tone.Synth).toMaster();
@@ -91,11 +88,6 @@ class App extends Component {
       this.setState({ playing: true, seqIsPlaying: false }, () => {
         //stop transport
         Tone.Transport.stop();
-        console.log("playing stopped");
-
-        // turn off looping - prevents collision with measure sequence loop
-        Tone.Transport.loop = false;
-        Tone.Transport.loopEnd = 0;
 
         // configure looping for step sequencer
         Tone.Transport.loopStart = 0;
@@ -367,50 +359,22 @@ class App extends Component {
   // computes a matrix based upon the current state of the step sequencer
   readCheckboxes(array) {
     console.log("reading checkboxes");
+    // gather current checkboxes
+    const topRowButtons = document.querySelectorAll(".top-row-btn");
+    const bottomRowButtons = document.querySelectorAll(".bottom-row-btn");
+    // create new arrays
+    const topArray = [];
+    const bottomArray = [];
     if (!array) {
-      // gather current checkboxes
-      const topRowButtons = document.querySelectorAll(".top-row-btn");
-      const bottomRowButtons = document.querySelectorAll(".bottom-row-btn");
-      // create new arrays
-      const topArray = [];
-      const bottomArray = [];
       for (let i = 0; i < topRowButtons.length; i++) {
-        if (topRowButtons[i].checked && bottomRowButtons[i].checked) {
-          topArray.push(1);
-          bottomArray.push(1);
-        } else if (!topRowButtons[i].checked && bottomRowButtons[i].checked) {
-          topArray.push(0);
-          bottomArray.push(1);
-        } else if (topRowButtons[i].checked && !bottomRowButtons[i].checked) {
-          topArray.push(1);
-          bottomArray.push(0);
-        } else if (!topRowButtons[i].checked && !bottomRowButtons[i].checked) {
-          topArray.push(0);
-          bottomArray.push(0);
-        }
+        topArray.push(topRowButtons[i].checked ? 1 : 0);
+        bottomArray.push(bottomRowButtons[i].checked ? 1 : 0);
       }
       return [topArray, bottomArray];
     } else {
-      // gather current checkboxes
-      const topRowButtons = document.querySelectorAll(".top-row-btn");
-      const bottomRowButtons = document.querySelectorAll(".bottom-row-btn");
-      // create new arrays
-      const topArray = [];
-      const bottomArray = [];
       for (let i = 0; i < topRowButtons.length; i++) {
-        if (topRowButtons[i].checked && bottomRowButtons[i].checked) {
-          topArray.push(1);
-          bottomArray.push(1);
-        } else if (!topRowButtons[i].checked && bottomRowButtons[i].checked) {
-          topArray.push(0);
-          bottomArray.push(1);
-        } else if (topRowButtons[i].checked && !bottomRowButtons[i].checked) {
-          topArray.push(1);
-          bottomArray.push(0);
-        } else if (!topRowButtons[i].checked && !bottomRowButtons[i].checked) {
-          topArray.push(0);
-          bottomArray.push(0);
-        }
+        topArray.push(topRowButtons[i].checked ? 1 : 0);
+        bottomArray.push(bottomRowButtons[i].checked ? 1 : 0);
       }
       return [topArray, bottomArray];
     }
@@ -423,18 +387,13 @@ class App extends Component {
     const finalMatrix = [];
     // 8ths, 16ths, and 32nds matrices length determined by numerator
     // half and quarters matrices length twice as long to incorporate rhythmic level below
-    // possibly rework the conditionals with >= and <=
-    if (denominator === 16 || denominator === 8 || denominator === 32) {
+    if (denominator >= 8) {
       for (let i = 0; i < numerator; i++) {
         i % 2 === 0 ? finalMatrix.push(1) : finalMatrix.push(0);
       }
-    } else if (denominator === 4 || denominator === 2) {
+    } else {
       for (let i = 0; i < numerator * 2; i++) {
-        if (i % 2 === 0) {
-          finalMatrix.push(1);
-        } else {
-          finalMatrix.push(0);
-        }
+        i % 2 === 0 ? finalMatrix.push(1) : finalMatrix.push(0);
       }
     }
     return finalMatrix;
