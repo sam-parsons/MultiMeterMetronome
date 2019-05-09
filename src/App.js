@@ -10,6 +10,7 @@ To-Do
 - make step sequencer look better
 - clean up logic of generateStepSequence
 - change step sequencer bottom row height so it does not trigger when clicking top row
+- variable pitch selectors
 */
 
 /*

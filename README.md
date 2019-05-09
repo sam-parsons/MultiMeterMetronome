@@ -13,6 +13,7 @@ View live in-progress [demo here](https://sam-parsons.github.io/MultiMeterMetron
 
 - Idiomatic formatting of triple meters
 - Preventing the tempo slider callback from executing on every value increment when the user slides
+- Variable pitches
 
 ## Author
 
