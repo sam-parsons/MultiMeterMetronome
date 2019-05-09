@@ -98,12 +98,12 @@ button {
 
 .top-row-shell {
   display: inline-block;
-  margin: 0;
+  margin: 0.5%;
 }
 
 .bottom-row-shell {
   display: inline-block;
-  margin: 0;
+  margin: 0.5%;
 }
 
 .top-row-btn {
@@ -119,12 +119,12 @@ button {
 .bottom-row {
   overflow-x: visible;
   white-space: nowrap;
-  margin-top: -3.5%;
 }
 
 input[type="checkbox"] {
   opacity: 0;
   z-index: -1;
+  position: absolute;
 }
 
 input[type="checkbox"] + label {
