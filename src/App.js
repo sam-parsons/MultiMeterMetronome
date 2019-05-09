@@ -7,12 +7,14 @@ import StartAudioContext from "startaudiocontext";
 
 /*
 To-Do
-- make step sequencer look better
 - clean up logic of generateStepSequence
 - change step sequencer bottom row height so it does not trigger when clicking top row
 - variable pitch selectors
 - reset button - pattern or program?
 - organize and document css files
+- space bar to play/stop
+- visualizations
+- play/stop icons
 */
 
 /*

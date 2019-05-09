@@ -1,0 +1,31 @@
+/* screenwidth less than 1200px
+*/
+@media only screen and (max-width: 1200px) {
+  body #info-span {
+    font-size: 1.2vw;
+  }
+}
+@media only screen and (max-width: 1024px) {
+}
+@media only screen and (max-width: 900px) {
+  body #info-span {
+    font-size: 1.4vw;
+  }
+  body .title h3 {
+    font-size: 3.5vw;
+  }
+}
+@media only screen and (max-width: 767px) {
+  body .App {
+    max-width: 70%;
+    margin: auto;
+  }
+  body #info-span {
+    font-size: 2vw;
+  }
+  body .title h3 {
+    font-size: 5vw;
+  }
+}
+@media only screen and (max-width: 480px) {
+}

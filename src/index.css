@@ -20,7 +20,7 @@ code {
 }
 
 .App {
-  max-width: 320px;
+  max-width: 50%;
   text-align: center;
   margin: 0 auto;
 }
@@ -74,12 +74,17 @@ button {
 }
 
 #info-span {
-  font-size: 7px;
+  font-size: 1vw;
   margin: 0 0 0 70%;
 }
 
 .title h3 {
   margin-top: 0;
+  font-size: 3vw;
+}
+
+.title {
+  margin-top: 1%;
 }
 
 #tempo-sld {
@@ -92,10 +97,6 @@ button {
 
 /* Step Sequence*/
 
-.top-row-btn:checked {
-  /* background: #26ca28; */
-}
-
 .top-row-shell {
   display: inline-block;
   margin: 0.5%;
@@ -104,10 +105,6 @@ button {
 .bottom-row-shell {
   display: inline-block;
   margin: 0.5%;
-}
-
-.top-row-btn {
-  /* display: none; */
 }
 
 .top-row {
