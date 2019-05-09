@@ -6,6 +6,20 @@
   }
 }
 @media only screen and (max-width: 1024px) {
+  body #num-beats-desc {
+    font-size: 1.2vw;
+  }
+
+  body #subdivision-desc {
+    font-size: 1.2vw;
+  }
+  body #tempo-value-header {
+    font-size: 1.1vw;
+  }
+  body .dimension {
+    width: 100%;
+    margin: 12% auto;
+  }
 }
 @media only screen and (max-width: 900px) {
   body #info-span {
@@ -26,6 +40,28 @@
   body .title h3 {
     font-size: 5vw;
   }
+  body .top-btns {
+    font-size: 3.5vw;
+  }
+  body #num-beats-desc {
+    font-size: 1.6vw;
+  }
+  body #subdivision-desc {
+    font-size: 1.6vw;
+  }
+  body #tempo-value-header {
+    font-size: 1.5vw;
+  }
+  .dimension {
+    width: 100%;
+    margin: 12% auto 15% auto;
+  }
 }
 @media only screen and (max-width: 480px) {
+  body #tempo-value-header {
+    font-size: 2vw;
+  }
+  body .top-btns {
+    font-size: 5vw;
+  }
 }
