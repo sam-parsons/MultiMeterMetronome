@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/MultiMeterMetronome/precache-manifest.2365cab47ba6db0b668b59ebc888ebd7.js"
+  "/MultiMeterMetronome/precache-manifest.824848bd62c03737069cdfcec103d9d2.js"
 );
 
 self.addEventListener('message', (event) => {
