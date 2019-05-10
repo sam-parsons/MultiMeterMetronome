@@ -69,7 +69,11 @@ button {
   font-size: 0.8vw;
   margin-bottom: 10%;
   position: relative;
-  margin-left: 30%;
+  margin-left: 35%;
+}
+
+#bpm-value {
+  font-size: 30px;
 }
 
 #num-beats-desc {
@@ -82,7 +86,7 @@ button {
 
 .dimension {
   width: 75%;
-  margin: 10% auto;
+  margin: 7.5% auto;
 }
 
 .play-export {

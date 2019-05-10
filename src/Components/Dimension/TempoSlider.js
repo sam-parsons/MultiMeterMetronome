@@ -14,7 +14,8 @@ class TempoSlider extends React.Component {
         />
         <div id="tempo-value">
           <div id="tempo-value-header">
-            Quarter notes per minute: {this.props.bpm}
+            Quarter notes per minute:
+            <div id="bpm-value">{this.props.bpm}</div>
           </div>
         </div>
       </div>

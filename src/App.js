@@ -10,9 +10,9 @@ To-Do
 - variable pitch selectors
 - reset button - pattern or program?
 - organize and document css files
-- space bar to play/stop
 - visualizations
-- space bar event listener
+- space bar event listener bug
+- step sequencer large numerator formatting (only make >11 available for 8ths, 16ths, 32nds)
 */
 
 /*
@@ -52,7 +52,16 @@ class App extends Component {
     this.generateStepSequence();
 
     // event listener for space bar
-    window.addEventListener("keydown", () => this.togglePlaying());
+    window.addEventListener("keydown", e => {
+      if (e.keyCode === 32 || e.keyCode === 13) {
+        try {
+          e.preventDefault(); // prevents space bar from triggering selected checkboxes
+          this.togglePlaying();
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    });
     // big bug - on stops, last alteration to step sequence gets erased
   }
 
@@ -114,9 +123,7 @@ class App extends Component {
   updateBPM() {
     const slider = document.querySelector("#tempo-sld").value;
     // set slider label
-    document.querySelector(
-      "#tempo-value-header"
-    ).innerHTML = `Quarter notes per minute: ${slider}`;
+    document.querySelector("#bpm-value").innerHTML = `${slider}`;
     this.setState(
       {
         bpm: parseInt(slider)
@@ -369,6 +376,7 @@ class App extends Component {
     // gather current checkboxes
     const topRowButtons = document.querySelectorAll(".top-row-btn");
     const bottomRowButtons = document.querySelectorAll(".bottom-row-btn");
+    console.log("top row step seq: ", topRowButtons);
     // create new arrays
     const topArray = [];
     const bottomArray = [];
@@ -377,12 +385,14 @@ class App extends Component {
         topArray.push(topRowButtons[i].checked ? 1 : 0);
         bottomArray.push(bottomRowButtons[i].checked ? 1 : 0);
       }
+      console.log([topArray, bottomArray]);
       return [topArray, bottomArray];
     } else {
       for (let i = 0; i < topRowButtons.length; i++) {
         topArray.push(topRowButtons[i].checked ? 1 : 0);
         bottomArray.push(bottomRowButtons[i].checked ? 1 : 0);
       }
+      console.log([topArray, bottomArray]);
       return [topArray, bottomArray];
     }
   }
