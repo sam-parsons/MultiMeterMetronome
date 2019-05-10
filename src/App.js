@@ -7,14 +7,12 @@ import StartAudioContext from "startaudiocontext";
 
 /*
 To-Do
-- clean up logic of generateStepSequence
-- change step sequencer bottom row height so it does not trigger when clicking top row
 - variable pitch selectors
 - reset button - pattern or program?
 - organize and document css files
 - space bar to play/stop
 - visualizations
-- play/stop icons
+- space bar event listener
 */
 
 /*
@@ -52,6 +50,10 @@ class App extends Component {
   componentDidMount() {
     this.generateMetronome();
     this.generateStepSequence();
+
+    // event listener for space bar
+    window.addEventListener("keydown", () => this.togglePlaying());
+    // big bug - on stops, last alteration to step sequence gets erased
   }
 
   togglePlaying() {
