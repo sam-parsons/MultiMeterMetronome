@@ -12,7 +12,11 @@ class PlayStopButton extends React.Component {
             this.props.togglePlaying();
           }}
         >
-          {this.props.playing ? "Stop" : "Play"}
+          {this.props.playing ? (
+            <span>&#10074;&#10074;</span>
+          ) : (
+            <span>&#9658;</span>
+          )}
         </button>
       </div>
     );
