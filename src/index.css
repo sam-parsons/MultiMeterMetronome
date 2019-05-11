@@ -237,7 +237,8 @@ button {
 
 .note-shell-divs {
   display: inline-flex;
-  margin: auto;
+  margin: 1% auto;
+  align-items: center;
 }
 
 .note-selects {
@@ -247,7 +248,7 @@ button {
   border-radius: 4px;
   display: inline-block;
   font: inherit;
-  font-size: 80%;
+  font-size: 60%;
   line-height: 0.9em;
   padding: 0.5em 3.5em 0.5em 1em;
 }

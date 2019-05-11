@@ -3,7 +3,7 @@ import React from "react";
 class BottomRow extends React.Component {
   render() {
     return (
-      <div id="bottom-shell-div" class="note-shell-divs">
+      <div id="bottom-shell-div" className="note-shell-divs">
         <select
           name="note2"
           id="note2"

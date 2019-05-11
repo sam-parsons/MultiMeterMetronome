@@ -7,8 +7,7 @@ import StartAudioContext from "startaudiocontext";
 
 /*
 To-Do
-- variable pitch selectors
-- variable tempo display indicators - quarters/eighths/etc per minute
+- ?? variable tempo display indicators - quarters/eighths/etc per minute
 - organize and document css files
 - visualizations
 - step sequencer large numerator formatting (only make >11 available for 8ths, 16ths, 32nds)
@@ -124,6 +123,8 @@ class App extends Component {
         // querySelectors - eliminate magic numbers - maybe move somewhere else?
         document.querySelector("#num-beats-input").value = 4;
         document.querySelector("#subdivision-input").value = 2;
+        document.querySelector("#note1").value = "Eb5";
+        document.querySelector("#note2").value = "C5";
 
         this.updateBPM(this.state.bpm);
         this.generateStepSequence();
@@ -171,15 +172,20 @@ class App extends Component {
     );
   }
 
-  // make this dynamic
+  // updates frequencies of notes
   updateNotes() {
     console.log("updating notes");
     const topNote = document.querySelector("#note1").value;
     const bottomNote = document.querySelector("#note2").value;
 
-    this.setState({
-      notes: [bottomNote, topNote]
-    });
+    this.setState(
+      {
+        notes: [bottomNote, topNote]
+      },
+      () => {
+        this.updateMetronome();
+      }
+    );
   }
 
   generateMetronome() {
