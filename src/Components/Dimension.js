@@ -3,6 +3,7 @@ import NumBeats from "./Dimension/NumBeats.js";
 import Subdivision from "./Dimension/Subdivision.js";
 import PlayStopButton from "./Dimension/PlayStopButton.js";
 import TempoSlider from "./Dimension/TempoSlider.js";
+import ResetButton from "./Dimension/ResetButton.js";
 
 class Dimension extends React.Component {
   render() {
@@ -22,6 +23,11 @@ class Dimension extends React.Component {
             updateTimeSig={this.props.updateTimeSig}
             restartPlaying={this.props.restartPlaying}
             updateMetronome={this.props.updateMetronome}
+          />
+          <ResetButton
+            updateTimeSig={this.props.updateTimeSig}
+            updateMetronome={this.props.updateMetronome}
+            resetMetronome={this.props.resetMetronome}
           />
         </div>
         <div className="play-export">

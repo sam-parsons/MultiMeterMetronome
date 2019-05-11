@@ -64,6 +64,23 @@ button {
   height: 60px;
 }
 
+.reset-btn {
+  color: #000000;
+  background: transparent;
+  border: 2px solid #000000;
+  border-radius: 6px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-family: "Courier";
+  font-size: 1.2vw;
+  width: 70px;
+  height: 25px;
+}
+
+#reset-div {
+  margin-top: 10%;
+}
+
 #tempo-value-header {
   margin-top: 3%;
   font-size: 0.8vw;

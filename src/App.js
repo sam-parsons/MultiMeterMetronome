@@ -8,18 +8,17 @@ import StartAudioContext from "startaudiocontext";
 /*
 To-Do
 - variable pitch selectors
-- reset button - pattern or program?
+- variable tempo display indicators - quarters/eighths/etc per minute
 - organize and document css files
 - visualizations
-- space bar event listener bug
 - step sequencer large numerator formatting (only make >11 available for 8ths, 16ths, 32nds)
 */
 
 /*
  * Questions
  ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ??
- ** how to use a ternary operator at the end of togglePlaying() ? - NOT IMPORTANT
  ** how does e.preventDefault() work on top and bottom row of step sequencer ??
+ ** better way of writing resetMetronome() with multiple querySelectors on one element?
  */
 
 const synth = new Tone.PolySynth(2, Tone.Synth).toMaster();
@@ -35,11 +34,11 @@ class App extends Component {
     this.state = {
       playing: false,
       bpm: 120,
-      loopStatus: false,
       notes: ["C5", "EB5"],
       timeSig: [4, 4],
       renderedNotes: [],
       metronomeContainer: [], // holds Part for future stoppage and erasal
+      loopStatus: false, // what is this used for?
       tempDivisor: 4,
       placement: 0,
       visualizeIndex: 0,
@@ -62,7 +61,6 @@ class App extends Component {
         }
       }
     });
-    // big bug - on stops, last alteration to step sequence gets erased
   }
 
   togglePlaying() {
@@ -90,13 +88,6 @@ class App extends Component {
         console.log("playing initiated");
       });
     }
-
-    // ** how to make this work after above async setStates ??
-    // console.log(
-    //   Tone.Transport.state == "started"
-    //     ? "playing initiated"
-    //     : "playing stopped"
-    // );
   }
 
   restartPlaying() {
@@ -120,8 +111,34 @@ class App extends Component {
     }
   }
 
-  updateBPM() {
-    const slider = document.querySelector("#tempo-sld").value;
+  resetMetronome() {
+    console.log("resetting metronome II");
+    this.setState(
+      {
+        bpm: 120,
+        loopStatus: false,
+        notes: ["C5", "EB5"],
+        timeSig: [4, 4]
+      },
+      () => {
+        // querySelectors - eliminate magic numbers - maybe move somewhere else?
+        document.querySelector("#num-beats-input").value = 4;
+        document.querySelector("#subdivision-input").value = 2;
+
+        this.updateBPM(this.state.bpm);
+        this.generateStepSequence();
+        this.updateMetronome();
+        this.restartPlaying();
+      }
+    );
+  }
+
+  updateBPM(value) {
+    // better way of writing this, maybe without two querySelectors??
+    const slider = value ? value : document.querySelector("#tempo-sld").value;
+    if (value) {
+      document.querySelector("#tempo-sld").value = value;
+    }
     // set slider label
     document.querySelector("#bpm-value").innerHTML = `${slider}`;
     this.setState(
@@ -189,7 +206,6 @@ class App extends Component {
     }, renderedNotes).start(0);
     metronomeContainer.push(part);
 
-    // set state
     this.setState({
       renderedNotes,
       metronomeContainer
@@ -250,7 +266,6 @@ class App extends Component {
     }, renderedNotes).start(0);
     metronomeContainer.push(part);
 
-    // set state
     this.setState({
       renderedNotes,
       metronomeContainer
@@ -469,6 +484,7 @@ class App extends Component {
           restartPlaying={this.restartPlaying.bind(this)}
           bpm={this.state.bpm}
           updateBPM={this.updateBPM.bind(this)}
+          resetMetronome={this.resetMetronome.bind(this)}
         />
         <StepSequence
           generateStepSequence={this.generateStepSequence.bind(this)}
