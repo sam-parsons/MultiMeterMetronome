@@ -7,8 +7,14 @@ class StepSequence extends React.Component {
   render() {
     return (
       <div id="step-sequence">
-        <TopRow updateMetronome={this.props.updateMetronome} />
-        <BottomRow updateMetronome={this.props.updateMetronome} />
+        <TopRow
+          updateMetronome={this.props.updateMetronome}
+          updateNotes={this.props.updateNotes}
+        />
+        <BottomRow
+          updateMetronome={this.props.updateMetronome}
+          updateNotes={this.props.updateNotes}
+        />
         {/* <ProgressBar /> */}
       </div>
     );

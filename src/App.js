@@ -171,6 +171,17 @@ class App extends Component {
     );
   }
 
+  // make this dynamic
+  updateNotes() {
+    console.log("updating notes");
+    const topNote = document.querySelector("#note1").value;
+    const bottomNote = document.querySelector("#note2").value;
+
+    this.setState({
+      notes: [bottomNote, topNote]
+    });
+  }
+
   generateMetronome() {
     console.log("generate metronome");
     // erase or stop all previous parts
@@ -489,6 +500,7 @@ class App extends Component {
         <StepSequence
           generateStepSequence={this.generateStepSequence.bind(this)}
           updateMetronome={this.updateMetronome.bind(this)}
+          updateNotes={this.updateNotes.bind(this)}
         />
       </div>
     );

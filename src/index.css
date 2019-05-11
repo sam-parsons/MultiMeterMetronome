@@ -230,6 +230,28 @@ button {
 
 /* Step Sequence*/
 
+#step-sequence {
+  display: grid;
+  margin: auto;
+}
+
+.note-shell-divs {
+  display: inline-flex;
+  margin: auto;
+}
+
+.note-selects {
+  margin-right: 7.5%;
+  background-color: white;
+  border: 2px solid #000000;
+  border-radius: 4px;
+  display: inline-block;
+  font: inherit;
+  font-size: 80%;
+  line-height: 0.9em;
+  padding: 0.5em 3.5em 0.5em 1em;
+}
+
 .top-row-shell {
   display: inline-block;
   margin: 0.5%;
