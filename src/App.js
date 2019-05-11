@@ -7,10 +7,10 @@ import StartAudioContext from "startaudiocontext";
 
 /*
 To-Do
-- ?? variable tempo display indicators - quarters/eighths/etc per minute
+- variable tempo display indicators - quarters/eighths/etc per minute
 - organize and document css files
 - visualizations
-- step sequencer large numerator formatting (only make >11 available for 8ths, 16ths, 32nds)
+- fix timeSignature fields responsiveness
 */
 
 /*
