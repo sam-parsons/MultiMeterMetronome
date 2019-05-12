@@ -7,12 +7,10 @@ import StartAudioContext from "startaudiocontext";
 
 /*
 To-Do
-- style variable tempo display
 - note length select/slider ?? not necessary, just make sounds shorter
 - ability to type in tempo
 - visualizations
-- fix timeSignature fields and step sequencer responsiveness
-- create resizeCheckboxes method - and include it in window resize events
+- window &stepSequencer resize event bugs
 - organize and document css files
 */
 
@@ -69,6 +67,9 @@ class App extends Component {
         }
       }
     });
+
+    // window resize listener
+    window.onresize = () => this.adjustLabelWidth();
   }
 
   togglePlaying() {
@@ -217,7 +218,6 @@ class App extends Component {
   }
 
   generateMetronome() {
-    console.log("generate metronome");
     // erase or stop all previous parts
     const metronomeContainer = this.state.metronomeContainer;
     metronomeContainer.forEach(part => part.removeAll());
@@ -258,7 +258,6 @@ class App extends Component {
   }
 
   updateMetronome() {
-    console.log("updating metronome");
     // erase or stop all previous parts
     const metronomeContainer = this.state.metronomeContainer;
     metronomeContainer.forEach(part => part.removeAll());
@@ -324,9 +323,8 @@ class App extends Component {
     const topRow = document.querySelector(".top-row");
     const bottomRow = document.querySelector(".bottom-row");
 
-    console.log("updating top row checkboxes");
-    // conditionals based on time signature divisor
     // - halves and quarters are twice as many checkboxes as the numerator to accomodate one rhythmic level below (halves and quarters / quarters and eighths)
+    // updating top row checkboxes
     if (timeSig[1] >= 8) {
       topRow.innerHTML = "";
       for (let i = 0; i < timeSig[0]; i++) {
@@ -381,7 +379,7 @@ class App extends Component {
       }
     }
 
-    console.log("updating bottom row checkboxes");
+    // updating bottom row checkboxes
     if (timeSig[1] >= 8) {
       bottomRow.innerHTML = "";
       for (let i = 0; i < timeSig[0]; i++) {
@@ -434,36 +432,55 @@ class App extends Component {
       }
     }
 
+    this.adjustLabelWidth();
+  }
+
+  // adjust step sequencer widths on DOM for large numerators
+  adjustLabelWidth() {
+    // resize checkboxes if appropriate
+    // gather layout data from DOM
     const appWidth = document.querySelector(".App").offsetWidth;
     const selectWidth =
       document.querySelector("#note1").offsetWidth +
       0.075 * document.querySelector(".App").offsetWidth;
-
-    const labelWidth = document.querySelector(".labels").offsetWidth;
     const labelCount = document.querySelector(".top-row").childElementCount;
-    const totalLabelsWidth = (labelWidth + 0.01 * appWidth) * labelCount;
-    const totalElementsWidth = selectWidth + totalLabelsWidth;
-    console.log(
-      "elements width greater than app width? ",
-      totalElementsWidth > appWidth
-    );
+    const totalLabelsWidth =
+      (document.querySelector(".labels").offsetWidth + 0.01 * appWidth) *
+      labelCount;
+    const totalElementsWidth =
+      document.querySelector("#note1").offsetWidth +
+      0.075 * appWidth +
+      totalLabelsWidth;
 
     // if totalElementsWidth greater than appWidth, shrink checkboxes to fit
+    const stepSeq = document.querySelector("#step-sequence");
     const labels = document.querySelectorAll(".labels");
-    const projLabelWidth =
-      (appWidth - selectWidth) / labelCount - 0.01 * appWidth;
-    if (totalElementsWidth > appWidth) {
+    let projLabelWidth;
+    if (appWidth - totalElementsWidth < 0) {
+      projLabelWidth = Math.round(
+        (appWidth - selectWidth) / labelCount - 0.01 * appWidth
+      );
       console.log("projected label width: ", projLabelWidth);
       labels.forEach(label => {
         label.style.width = `${projLabelWidth}px`;
         label.style.height = `${projLabelWidth}px`;
       });
+      stepSeq.style.margin = "-5% auto auto";
+    } else {
+      // default label formatting
+      console.log("standard label width: 30px");
+      labels.forEach(label => {
+        label.style.width = `30px`;
+        label.style.height = `30px`;
+      });
+      stepSeq.style.margin = `-5% auto auto ${Math.round(
+        (appWidth - totalElementsWidth) / 20
+      )}%`;
     }
   }
 
   // returns a 2d matrix based upon the current state of the step sequencer
   readCheckboxes(array) {
-    console.log("reading checkboxes");
     // gather current checkboxes
     const topRowButtons = document.querySelectorAll(".top-row-btn");
     const bottomRowButtons = document.querySelectorAll(".bottom-row-btn");
@@ -489,7 +506,6 @@ class App extends Component {
 
   // generates a generic matrix for new time signatures
   generateSeqMatrix() {
-    console.log("generating step sequence matrix");
     const [numerator, denominator] = this.state.timeSig;
     const finalMatrix = [];
     // 8ths, 16ths, and 32nds matrices length determined by numerator

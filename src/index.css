@@ -229,12 +229,22 @@ button {
   font-size: 10px;
 }
 
+#tempo-subdivision {
+  background-color: white;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  display: inline-block;
+  font: inherit;
+  font-size: 80%;
+  line-height: 0.9em;
+  padding: 0.5em 3.5em 0.5em 1em;
+}
+
 /* Step Sequence*/
 
 #step-sequence {
   display: grid;
-  margin: auto;
-  margin-top: -5%;
+  margin: -5% auto auto -5%;
 }
 
 .note-shell-divs {

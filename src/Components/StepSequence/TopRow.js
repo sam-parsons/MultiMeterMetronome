@@ -33,7 +33,7 @@ class TopRow extends React.Component {
         <div
           className="top-row"
           onClick={e => {
-            //   e.preventDefault(); // ** WHY DOES THIS WORK ??
+            // e.preventDefault();
             this.props.updateMetronome();
           }}
         />
