@@ -7,19 +7,21 @@ import StartAudioContext from "startaudiocontext";
 
 /*
 To-Do
-- variable tempo display indicators - quarters/eighths/etc per minute
-- note length select/slider
+- style variable tempo display
+- note length select/slider ?? not necessary, just make sounds shorter
+- ability to type in tempo
 - visualizations
 - fix timeSignature fields and step sequencer responsiveness
+- create resizeCheckboxes method - and include it in window resize events
 - organize and document css files
 */
 
 /*
  * Questions
- ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ??
+ ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ?? this.state.defaults: {timeSig:[4,4], ...}
  ** how does e.preventDefault() work on top and bottom row of step sequencer ??
  ** better way of writing resetMetronome() with multiple querySelectors on one element?
- ** how to confine all elements of a div within that div (step seq high numerators)
+ ** h
  */
 
 const synth = new Tone.PolySynth(2, Tone.Synth).toMaster();
@@ -35,15 +37,20 @@ class App extends Component {
     this.state = {
       playing: false,
       bpm: 120,
-      notes: ["C5", "EB5"],
+      notes: ["C5", "Eb5"],
       timeSig: [4, 4],
       renderedNotes: [],
       metronomeContainer: [], // holds Part for future stoppage and erasal
-      loopStatus: false, // what is this used for?
-      tempDivisor: 4,
-      placement: 0,
-      visualizeIndex: 0,
-      eventCache: []
+      defaults: {
+        timeSig: [4, 4],
+        bpm: 120,
+        notes: ["C5", "Eb5"]
+      }
+      // loopStatus: false, // what is this used for?
+      // tempDivisor: 4,
+      // placement: 0,
+      // visualizeIndex: 0,
+      // eventCache: []
     };
   }
 
@@ -113,25 +120,32 @@ class App extends Component {
   }
 
   resetMetronome() {
-    console.log("resetting metronome II");
+    console.log("resetting metronome");
     this.setState(
       {
-        bpm: 120,
-        loopStatus: false,
-        notes: ["C5", "EB5"],
-        timeSig: [4, 4]
+        bpm: this.state.defaults["bpm"],
+        notes: this.state.defaults["notes"],
+        timeSig: this.state.defaults["timeSig"]
       },
       () => {
         // querySelectors - eliminate magic numbers - maybe move somewhere else?
-        document.querySelector("#num-beats-input").value = 4;
-        document.querySelector("#subdivision-input").value = 2;
-        document.querySelector("#note1").value = "Eb5";
-        document.querySelector("#note2").value = "C5";
+        document.querySelector("#num-beats-input").value = this.state.defaults[
+          "timeSig"
+        ][0];
+        document.querySelector("#subdivision-input").value = Math.sqrt(
+          this.state.defaults["timeSig"][1]
+        ); // how to eliminate sqrt call?
+        document.querySelector("#note1").value = this.state.defaults[
+          "notes"
+        ][1];
+        document.querySelector("#note2").value = this.state.defaults[
+          "notes"
+        ][0];
 
         this.updateBPM(this.state.bpm);
         this.generateStepSequence();
         this.updateMetronome();
-        this.restartPlaying();
+        if (this.state.playing) this.restartPlaying();
       }
     );
   }
@@ -258,7 +272,8 @@ class App extends Component {
     // make copy of rendered notes and erase everything
     const renderedNotes = [];
     const matrix = this.readCheckboxes();
-    console.log("updated matrix: " + matrix);
+    console.log(`updated matrix: `);
+    console.log([matrix[0], matrix[1]]);
     for (let i = 0; i < metLength; i++) {
       if (timeSig[1] <= 4 && i % (beatTicks / 2) === 0) {
         if (matrix[0][i / (beatTicks / 2)] === 1) {
@@ -309,9 +324,6 @@ class App extends Component {
     const topRow = document.querySelector(".top-row");
     const bottomRow = document.querySelector(".bottom-row");
 
-    console.log("step sequence testing");
-    console.log(document.querySelector("#step-sequence").offsetWidth);
-
     console.log("updating top row checkboxes");
     // conditionals based on time signature divisor
     // - halves and quarters are twice as many checkboxes as the numerator to accomodate one rhythmic level below (halves and quarters / quarters and eighths)
@@ -331,6 +343,7 @@ class App extends Component {
         const label = document.createElement("label");
         label.key = "tk" + i;
         label.setAttribute("for", "tr" + i);
+        label.className = "labels";
         const highlight = document.createElement("div");
         highlight.key = "th" + i;
         highlight.className = "highlight";
@@ -356,6 +369,7 @@ class App extends Component {
         const label = document.createElement("label");
         label.key = "tk" + i;
         label.setAttribute("for", "tr" + i);
+        label.className = "labels";
         const highlight = document.createElement("div");
         highlight.key = "th" + i;
         highlight.className = "highlight";
@@ -383,6 +397,7 @@ class App extends Component {
         const label = document.createElement("label");
         label.key = "bk" + i;
         label.setAttribute("for", "br" + i);
+        label.className = "labels";
         const highlight = document.createElement("div");
         highlight.key = "th" + i;
         highlight.className = "highlight";
@@ -407,6 +422,7 @@ class App extends Component {
         const label = document.createElement("label");
         label.key = "bk" + i;
         label.setAttribute("for", "br" + i);
+        label.className = "labels";
         const highlight = document.createElement("div");
         highlight.key = "th" + i;
         highlight.className = "highlight";
@@ -417,15 +433,40 @@ class App extends Component {
         bottomRow.appendChild(div);
       }
     }
+
+    const appWidth = document.querySelector(".App").offsetWidth;
+    const selectWidth =
+      document.querySelector("#note1").offsetWidth +
+      0.075 * document.querySelector(".App").offsetWidth;
+
+    const labelWidth = document.querySelector(".labels").offsetWidth;
+    const labelCount = document.querySelector(".top-row").childElementCount;
+    const totalLabelsWidth = (labelWidth + 0.01 * appWidth) * labelCount;
+    const totalElementsWidth = selectWidth + totalLabelsWidth;
+    console.log(
+      "elements width greater than app width? ",
+      totalElementsWidth > appWidth
+    );
+
+    // if totalElementsWidth greater than appWidth, shrink checkboxes to fit
+    const labels = document.querySelectorAll(".labels");
+    const projLabelWidth =
+      (appWidth - selectWidth) / labelCount - 0.01 * appWidth;
+    if (totalElementsWidth > appWidth) {
+      console.log("projected label width: ", projLabelWidth);
+      labels.forEach(label => {
+        label.style.width = `${projLabelWidth}px`;
+        label.style.height = `${projLabelWidth}px`;
+      });
+    }
   }
 
-  // computes a matrix based upon the current state of the step sequencer
+  // returns a 2d matrix based upon the current state of the step sequencer
   readCheckboxes(array) {
     console.log("reading checkboxes");
     // gather current checkboxes
     const topRowButtons = document.querySelectorAll(".top-row-btn");
     const bottomRowButtons = document.querySelectorAll(".bottom-row-btn");
-    console.log("top row step seq: ", topRowButtons);
     // create new arrays
     const topArray = [];
     const bottomArray = [];
@@ -434,14 +475,14 @@ class App extends Component {
         topArray.push(topRowButtons[i].checked ? 1 : 0);
         bottomArray.push(bottomRowButtons[i].checked ? 1 : 0);
       }
-      console.log([topArray, bottomArray]);
+      // console.log([topArray, bottomArray]);
       return [topArray, bottomArray];
     } else {
       for (let i = 0; i < topRowButtons.length; i++) {
         topArray.push(topRowButtons[i].checked ? 1 : 0);
         bottomArray.push(bottomRowButtons[i].checked ? 1 : 0);
       }
-      console.log([topArray, bottomArray]);
+      // console.log([topArray, bottomArray]);
       return [topArray, bottomArray];
     }
   }

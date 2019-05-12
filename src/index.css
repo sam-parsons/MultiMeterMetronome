@@ -283,8 +283,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"] + label {
-  width: 2vw;
-  height: 2vw;
+  width: 30px;
+  height: 30px;
   display: block;
   position: relative;
   margin: 0;

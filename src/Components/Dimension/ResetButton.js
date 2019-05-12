@@ -8,7 +8,6 @@ class ResetButton extends React.Component {
           className="reset-btn"
           id="reset-btn"
           onClick={() => {
-            console.log("resetting metronome");
             this.props.resetMetronome();
           }}
         >
