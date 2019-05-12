@@ -37,7 +37,11 @@ class Dimension extends React.Component {
             updateMetronome={this.props.updateMetronome}
           />
         </div>
-        <TempoSlider updateBPM={this.props.updateBPM} bpm={this.props.bpm} />
+        <TempoSlider
+          updateBPM={this.props.updateBPM}
+          bpm={this.props.bpm}
+          updateTempoSubdivision={this.props.updateTempoSubdivision}
+        />
       </div>
     );
   }

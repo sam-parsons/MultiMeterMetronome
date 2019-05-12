@@ -14,7 +14,15 @@ class TempoSlider extends React.Component {
         />
         <div id="tempo-value">
           <div id="tempo-value-header">
-            Quarter notes per minute:
+            <select
+              name="tempo-subdivision"
+              id="tempo-subdivision"
+              onChange={() => this.props.updateTempoSubdivision()}
+            >
+              <option value="Q">Quarter notes per minute</option>
+              <option value="E">Eighth notes per minute</option>
+            </select>
+
             <div id="bpm-value">{this.props.bpm}</div>
           </div>
         </div>

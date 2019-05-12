@@ -8,9 +8,10 @@ import StartAudioContext from "startaudiocontext";
 /*
 To-Do
 - variable tempo display indicators - quarters/eighths/etc per minute
-- organize and document css files
+- note length select/slider
 - visualizations
-- fix timeSignature fields responsiveness
+- fix timeSignature fields and step sequencer responsiveness
+- organize and document css files
 */
 
 /*
@@ -18,6 +19,7 @@ To-Do
  ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ??
  ** how does e.preventDefault() work on top and bottom row of step sequencer ??
  ** better way of writing resetMetronome() with multiple querySelectors on one element?
+ ** how to confine all elements of a div within that div (step seq high numerators)
  */
 
 const synth = new Tone.PolySynth(2, Tone.Synth).toMaster();
@@ -188,6 +190,18 @@ class App extends Component {
     );
   }
 
+  // updates quarter note or eighth note tempo
+  updateTempoSubdivision() {
+    console.log("updating tempo subdivision calculation");
+    let tempBPM =
+      document.querySelector("#tempo-subdivision").value === "E"
+        ? this.state.bpm * 2
+        : this.state.bpm / 2;
+
+    document.querySelector("#bpm-value").innerHTML = tempBPM;
+    document.querySelector("#tempo-sld").value = tempBPM;
+  }
+
   generateMetronome() {
     console.log("generate metronome");
     // erase or stop all previous parts
@@ -294,6 +308,9 @@ class App extends Component {
     const matrix = this.generateSeqMatrix();
     const topRow = document.querySelector(".top-row");
     const bottomRow = document.querySelector(".bottom-row");
+
+    console.log("step sequence testing");
+    console.log(document.querySelector("#step-sequence").offsetWidth);
 
     console.log("updating top row checkboxes");
     // conditionals based on time signature divisor
@@ -502,6 +519,7 @@ class App extends Component {
           bpm={this.state.bpm}
           updateBPM={this.updateBPM.bind(this)}
           resetMetronome={this.resetMetronome.bind(this)}
+          updateTempoSubdivision={this.updateTempoSubdivision.bind(this)}
         />
         <StepSequence
           generateStepSequence={this.generateStepSequence.bind(this)}

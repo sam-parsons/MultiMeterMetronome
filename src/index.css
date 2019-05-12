@@ -234,11 +234,12 @@ button {
 #step-sequence {
   display: grid;
   margin: auto;
+  margin-top: -5%;
 }
 
 .note-shell-divs {
   display: inline-flex;
-  margin: 1% auto;
+  margin: 1%;
   align-items: center;
 }
 
@@ -282,8 +283,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"] + label {
-  width: 25px;
-  height: 25px;
+  width: 2vw;
+  height: 2vw;
   display: block;
   position: relative;
   margin: 0;
@@ -380,16 +381,4 @@ input[type="checkbox"].bottom-row-btn:checked + label {
   background-color: white;
   width: 18px;
   height: 1px;
-}
-
-#play-pause-btn {
-  font-family: "Courier";
-}
-
-#loop-btn {
-  font-family: "Courier";
-}
-
-#clear-btn {
-  font-family: "Courier";
 }
