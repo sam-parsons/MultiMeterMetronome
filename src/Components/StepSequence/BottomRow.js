@@ -35,7 +35,7 @@ class BottomRow extends React.Component {
           className="bottom-row"
           onClick={e => {
             this.props.updateMetronome();
-            e.preventDefault(); // ** WHY DOES THIS WORK ??
+            // e.preventDefault();
           }}
         />
       </div>

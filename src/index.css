@@ -20,7 +20,7 @@ code {
 }
 
 .App {
-  max-width: 50%;
+  max-width: 55%;
   text-align: center;
   margin: 0 auto;
 }
@@ -73,7 +73,7 @@ button {
   text-decoration: none;
   text-transform: uppercase;
   font-family: "Courier";
-  font-size: 1.2vw;
+  font-size: 80%;
   width: 70px;
   height: 25px;
 }

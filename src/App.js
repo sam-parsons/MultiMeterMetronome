@@ -247,7 +247,7 @@ class App extends Component {
 
     // create new Part, start Part, push Part to container
     const part = new Tone.Part((time, value) => {
-      synth.triggerAttackRelease(value.note, "32n", time, value.velocity);
+      synth.triggerAttackRelease(value.note, 0.05, time, value.velocity);
     }, renderedNotes).start(0);
     metronomeContainer.push(part);
 
@@ -307,7 +307,7 @@ class App extends Component {
       }
     }
     const part = new Tone.Part((time, value) => {
-      synth.triggerAttackRelease(value.note, "32n", time, value.velocity);
+      synth.triggerAttackRelease(value.note, 0.05, time, value.velocity);
     }, renderedNotes).start(0);
     metronomeContainer.push(part);
 
