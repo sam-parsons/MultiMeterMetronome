@@ -92,6 +92,9 @@ class App extends Component {
         // turn off looping - prevents collision with measure sequence loop
         Tone.Transport.loop = false;
         Tone.Transport.loopEnd = 0;
+
+        // clear visualization
+        this.clearVisualization();
       });
     } else {
       this.setState({ playing: true, seqIsPlaying: false }, () => {
@@ -336,10 +339,11 @@ class App extends Component {
         }
       }
     }
+
     const part = new Tone.Part((time, value) => {
       synth.triggerAttackRelease(value.note, 0.05, time, value.velocity);
-      // do stuff
-      this.advanceVisualization(value.labelNum, beatTicks);
+
+      this.advanceVisualization(value.labelNum);
     }, renderedNotes).start(0);
     metronomeContainer.push(part);
 
@@ -349,16 +353,25 @@ class App extends Component {
     });
   }
 
-  advanceVisualization(index, length) {
+  advanceVisualization(index) {
     const labelList = document.querySelectorAll(".labels");
-
+    const length = labelList.length / 2;
     if (index === 0) {
       labelList[index].style.background = "lavender";
+      labelList[index + length].style.background = "lavender";
       labelList[length - 1].style.background = "none";
+      labelList[length * 2 - 1].style.background = "none";
     } else {
       labelList[index].style.background = "lavender";
+      labelList[index + length].style.background = "lavender";
       labelList[index - 1].style.background = "none";
+      labelList[index + length - 1].style.background = "none";
     }
+  }
+
+  clearVisualization() {
+    const labelList = document.querySelectorAll(".labels");
+    labelList.forEach(label => (label.style.background = "none"));
   }
 
   generateStepSequence() {
