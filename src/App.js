@@ -67,14 +67,19 @@ class App extends Component {
       }
     });
 
-    // debounce window resize listener
+    // throttle window resize listener
     const newFunc = this.adjustLabelWidth;
-    let timeout = false, // holder for timeout id
-      delay = 300;
-    window.addEventListener("resize", function() {
-      clearTimeout(timeout);
-      timeout = setTimeout(newFunc, delay);
-    });
+    let isFiring = false;
+    const throttleEvent = () => {
+      if (!isFiring) {
+        window.requestAnimationFrame(() => {
+          newFunc();
+          isFiring = false;
+        });
+      }
+      isFiring = true;
+    };
+    window.addEventListener("resize", throttleEvent, false);
   }
 
   togglePlaying() {
@@ -253,6 +258,7 @@ class App extends Component {
     // create new Part, start Part, push Part to container
     const part = new Tone.Part((time, value) => {
       synth.triggerAttackRelease(value.note, 0.05, time, value.velocity);
+      console.log("sound");
     }, renderedNotes).start(0);
     metronomeContainer.push(part);
 
@@ -278,20 +284,30 @@ class App extends Component {
     const matrix = this.readCheckboxes();
     console.log(`updated matrix: `);
     console.log([matrix[0], matrix[1]]);
+    let labelCount = 0;
     for (let i = 0; i < metLength; i++) {
       if (timeSig[1] <= 4 && i % (beatTicks / 2) === 0) {
         if (matrix[0][i / (beatTicks / 2)] === 1) {
           renderedNotes.push({
             note: notes[1],
             time: `0:${i / 8}`,
-            velocity: 0.1
+            velocity: 0.1,
+            labelNum: labelCount++
           });
-        }
-        if (matrix[1][i / (beatTicks / 2)] === 1) {
+        } else if (matrix[1][i / (beatTicks / 2)] === 1) {
           renderedNotes.push({
             note: notes[0],
             time: `0:${i / 8}`,
-            velocity: 0.1
+            velocity: 0.1,
+            labelNum: labelCount++
+          });
+        } else {
+          // render silent notes
+          renderedNotes.push({
+            note: "A5",
+            time: `0:${i / 8}`,
+            velocity: 0,
+            labelNum: labelCount++
           });
         }
       } else if (i % beatTicks === 0) {
@@ -299,20 +315,31 @@ class App extends Component {
           renderedNotes.push({
             note: notes[1],
             time: `0:${i / 8}`,
-            velocity: 0.1
+            velocity: 0.1,
+            labelNum: labelCount++
           });
-        }
-        if (matrix[1][i / beatTicks] === 1) {
+        } else if (matrix[1][i / beatTicks] === 1) {
           renderedNotes.push({
             note: notes[0],
             time: `0:${i / 8}`,
-            velocity: 0.1
+            velocity: 0.1,
+            labelNum: labelCount++
+          });
+        } else {
+          // render silent notes
+          renderedNotes.push({
+            note: "A5",
+            time: `0:${i / 8}`,
+            velocity: 0,
+            labelNum: labelCount++
           });
         }
       }
     }
     const part = new Tone.Part((time, value) => {
       synth.triggerAttackRelease(value.note, 0.05, time, value.velocity);
+      // do stuff
+      this.advanceVisualization(value.labelNum, beatTicks);
     }, renderedNotes).start(0);
     metronomeContainer.push(part);
 
@@ -322,8 +349,19 @@ class App extends Component {
     });
   }
 
+  advanceVisualization(index, length) {
+    const labelList = document.querySelectorAll(".labels");
+
+    if (index === 0) {
+      labelList[index].style.background = "lavender";
+      labelList[length - 1].style.background = "none";
+    } else {
+      labelList[index].style.background = "lavender";
+      labelList[index - 1].style.background = "none";
+    }
+  }
+
   generateStepSequence() {
-    console.log("gen step seq");
     const timeSig = this.state.timeSig;
     const matrix = this.generateSeqMatrix();
     const topRow = document.querySelector(".top-row");
@@ -343,16 +381,11 @@ class App extends Component {
         element.id = "tr" + i;
         element.className = "top-row-btn";
         element.checked = i === 0 ? true : false;
-        element.setAttribute("highlighted", false);
         const label = document.createElement("label");
         label.key = "tk" + i;
         label.setAttribute("for", "tr" + i);
         label.className = "labels";
-        const highlight = document.createElement("div");
-        highlight.key = "th" + i;
-        highlight.className = "highlight";
-        highlight.hidden = false;
-        label.appendChild(highlight);
+        label.setAttribute("highlighted", false);
         div.appendChild(element);
         div.appendChild(label);
         topRow.appendChild(div);
@@ -369,16 +402,11 @@ class App extends Component {
         element.id = "tr" + i;
         element.className = "top-row-btn";
         element.checked = matrix[0] === 1 && i === 0 ? true : false;
-        element.setAttribute("highlighted", false);
         const label = document.createElement("label");
         label.key = "tk" + i;
         label.setAttribute("for", "tr" + i);
         label.className = "labels";
-        const highlight = document.createElement("div");
-        highlight.key = "th" + i;
-        highlight.className = "highlight";
-        highlight.hidden = false;
-        label.appendChild(highlight);
+        label.setAttribute("highlighted", false);
         div.appendChild(element);
         div.appendChild(label);
         topRow.appendChild(div);
@@ -402,11 +430,6 @@ class App extends Component {
         label.key = "bk" + i;
         label.setAttribute("for", "br" + i);
         label.className = "labels";
-        const highlight = document.createElement("div");
-        highlight.key = "th" + i;
-        highlight.className = "highlight";
-        highlight.hidden = false;
-        label.appendChild(highlight);
         div.appendChild(element);
         div.appendChild(label);
         bottomRow.appendChild(div);
@@ -427,11 +450,6 @@ class App extends Component {
         label.key = "bk" + i;
         label.setAttribute("for", "br" + i);
         label.className = "labels";
-        const highlight = document.createElement("div");
-        highlight.key = "th" + i;
-        highlight.className = "highlight";
-        highlight.hidden = false;
-        label.appendChild(highlight);
         div.appendChild(element);
         div.appendChild(label);
         bottomRow.appendChild(div);
@@ -475,6 +493,9 @@ class App extends Component {
     } else {
       // default label formatting
       console.log("standard label width: 30px");
+      console.log(
+        "app width: " + appWidth + " - elements width: " + totalElementsWidth
+      );
       labels.forEach(label => {
         label.style.width = `30px`;
         label.style.height = `30px`;
