@@ -7,10 +7,9 @@ import StartAudioContext from "startaudiocontext";
 
 /*
 To-Do
-- note length select/slider ?? not necessary, just make sounds shorter
 - ability to type in tempo
 - visualizations
-- window &stepSequencer resize event bugs
+- step sequencer better responsive performance
 - organize and document css files
 */
 
@@ -68,8 +67,14 @@ class App extends Component {
       }
     });
 
-    // window resize listener
-    window.onresize = () => this.adjustLabelWidth();
+    // debounce window resize listener
+    const newFunc = this.adjustLabelWidth;
+    let timeout = false, // holder for timeout id
+      delay = 300;
+    window.addEventListener("resize", function() {
+      clearTimeout(timeout);
+      timeout = setTimeout(newFunc, delay);
+    });
   }
 
   togglePlaying() {
@@ -318,6 +323,7 @@ class App extends Component {
   }
 
   generateStepSequence() {
+    console.log("gen step seq");
     const timeSig = this.state.timeSig;
     const matrix = this.generateSeqMatrix();
     const topRow = document.querySelector(".top-row");
