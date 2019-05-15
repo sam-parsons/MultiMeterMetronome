@@ -8,7 +8,7 @@ import StartAudioContext from "startaudiocontext";
 /*
 To-Do
 - ability to type in tempo
-- visualizations
+- bugs in updateMetronome
 - step sequencer better responsive performance
 - organize and document css files
 */
@@ -18,7 +18,6 @@ To-Do
  ** how/where to extract magic numbers in calcMetLength and calcBeatTicks ?? this.state.defaults: {timeSig:[4,4], ...}
  ** how does e.preventDefault() work on top and bottom row of step sequencer ??
  ** better way of writing resetMetronome() with multiple querySelectors on one element?
- ** h
  */
 
 const synth = new Tone.PolySynth(2, Tone.Synth).toMaster();
@@ -44,10 +43,6 @@ class App extends Component {
         notes: ["C5", "Eb5"]
       }
       // loopStatus: false, // what is this used for?
-      // tempDivisor: 4,
-      // placement: 0,
-      // visualizeIndex: 0,
-      // eventCache: []
     };
   }
 
@@ -290,7 +285,23 @@ class App extends Component {
     let labelCount = 0;
     for (let i = 0; i < metLength; i++) {
       if (timeSig[1] <= 4 && i % (beatTicks / 2) === 0) {
-        if (matrix[0][i / (beatTicks / 2)] === 1) {
+        if (
+          matrix[0][i / (beatTicks / 2)] === 1 &&
+          matrix[1][i / (beatTicks / 2)] === 1
+        ) {
+          renderedNotes.push({
+            note: notes[1],
+            time: `0:${i / 8}`,
+            velocity: 0.1,
+            labelNum: labelCount++
+          });
+          renderedNotes.push({
+            note: notes[0],
+            time: `0:${i / 8}`,
+            velocity: 0.1,
+            labelNum: labelCount
+          });
+        } else if (matrix[0][i / (beatTicks / 2)] === 1) {
           renderedNotes.push({
             note: notes[1],
             time: `0:${i / 8}`,
@@ -314,7 +325,20 @@ class App extends Component {
           });
         }
       } else if (i % beatTicks === 0) {
-        if (matrix[0][i / beatTicks] === 1) {
+        if (matrix[0][i / beatTicks] === 1 && matrix[1][i / beatTicks] === 1) {
+          renderedNotes.push({
+            note: notes[1],
+            time: `0:${i / 8}`,
+            velocity: 0.1,
+            labelNum: labelCount++
+          });
+          renderedNotes.push({
+            note: notes[0],
+            time: `0:${i / 8}`,
+            velocity: 0.1,
+            labelNum: labelCount
+          });
+        } else if (matrix[0][i / beatTicks] === 1) {
           renderedNotes.push({
             note: notes[1],
             time: `0:${i / 8}`,
