@@ -1,5 +1,4 @@
-# Multimeter Metronome
-
+Multimeter Metronome
 Multimeter metronome built in React using Tone.js.
 
 View live in-progress [demo here](https://sam-parsons.github.io/MultiMeterMetronome)
