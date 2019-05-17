@@ -42,7 +42,6 @@ yarn start
 
 ## Features
 
-- Built with [![](tonejs_logo.png)](https://tonejs.github.io/)
 - Beat subdivision to the 32nd note
 - Two tones with variable pitch
 - Step sequencer resize on time signature change
@@ -51,14 +50,6 @@ yarn start
 
 - Idiomatic formatting of [triple meters](https://en.wikipedia.org/wiki/Triple_metre)
 - Measure Sequencing
-
-## Contributors
-
-Thanks to all the people who contributed in some way, shape or form.
-
-- [Andrew Covert](https://github.com/acovert)
-- [Ted Lorts](https://github.com/tplorts)
-- [Miguel Tepale](https://github.com/MiguelTepale)
 
 ## License
 
