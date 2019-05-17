@@ -1,43 +1,64 @@
-# [MultiMeter Metronome](https://sam-parsons.github.io/MultiMeterMetronome)
+<br>
 
+<p align="center">
+  <a href="https://github.com/sam-parsons/MultiMeterMetronome">
+    <img src="./mosaic_monogram.jpg" alt="metro symbol" width="80" />
+  </a>
+</p>
 
+<h1 align="center">MultiMeter Metronome</h1>
 
-# Description
+<p align="center">
+  Musical utility for practicing and creating rhythmic phrases</a>.
+  <br>
+  <a href="https://sam-parsons.github.io/MultiMeterMetronome"><strong>Live Demo »</strong></a>
+</p>
 
-**MultiMeter Metronome** is an audio tool for advanced musicians that allows the user to sequence a beat pattern using two different tones. Tempo adjustment ranges from 30 to 400 Beats per Minute (BPM). This program was built in [**React**](https://reactjs.org/) using [**Tone.js**](https://tonejs.github.io/).
+<a href="https://sam-parsons.github.io/MultiMeterMetronome">
+  <img src="./screenshot1.gif" alt="metro thumbnail" width="100%" />
+</a>
 
----
-> ### View the **LIVE** in-progress demo [**HERE**](https://sam-parsons.github.io/MultiMeterMetronome)!
---- 
+<br>
+<br>
 
-![](screenshot1.gif)
+<p align="center">
+  <a href="https://travis-ci.org/reakit/reakit"><img alt="Build Status" src="https://img.shields.io/travis/reakit/reakit/master.svg?style=flat-square" /></a>
+  <a href="https://codecov.io/gh/reakit/reakit/branch/master"><img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/reakit/reakit/master.svg?style=flat-square" /></a><br>
+  <a href="https://spectrum.chat/reakit"><img src="https://img.shields.io/badge/community-spectrum-7A2DFB.svg?style=flat-square" alt="Spectrum" /></a>
 
-# Current Features
+</p>
+
+## Installation
+
+```sh
+git clone https://github.com/sam-parsons/MultiMeterMetronome.git
+
+cd MultiMeterMetronome/
+
+yarn
+
+yarn start
+```
+
+## Current Features
 
 - Beat subdivision to the 32nd note
 - Two tones with variable pitch
+- Step sequencer resize on time signature change
 
-
-# Future Features:
-
+## Future Features
 
 - Idiomatic formatting of [triple meters](https://en.wikipedia.org/wiki/Triple_metre)
-- Prevent the tempo slider callback from executing on every value increment when the user slides
+- Measure Sequencing
 
-# Built with
+## Contributors
 
+Thanks to all the people who contributed in some way, shape or form.
 
-![](react_logo3.png)
+- [Andrew Covert](https://github.com/acovert)
+- [Ted Lorts](https://github.com/tplorts)
+- [Miguel Tepale](https://github.com/MiguelTepale)
 
-![](tonejs_logo.png)
-
-
-# Author
-
-### **Sam Parsons**
-
-# License
+## License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details.
-
-<!-- ![](metGIF.gif) -->

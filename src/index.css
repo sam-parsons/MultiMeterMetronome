@@ -339,9 +339,6 @@ input[type="checkbox"].bottom-row-btn:checked + label {
   width: 15px;
 }
 
-label {
-  background: #2a6495;
-}
 /* Sequence*/
 
 .square {
