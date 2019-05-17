@@ -40,8 +40,9 @@ yarn
 yarn start
 ```
 
-## Current Features
+## Features
 
+- Built with [![](tonejs_logo.png)](https://tonejs.github.io/)
 - Beat subdivision to the 32nd note
 - Two tones with variable pitch
 - Step sequencer resize on time signature change
