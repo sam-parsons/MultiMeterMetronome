@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/sam-parsons/MultiMeterMetronome">
-    <img src="./mosaic_monogram.jpg" alt="metro symbol" width="80" />
+    <img src="./assets/mosaic_monogram.jpg" alt="metro symbol" width="80" />
   </a>
 </p>
 
@@ -15,7 +15,7 @@
 </p>
 
 <a href="https://sam-parsons.github.io/MultiMeterMetronome">
-  <img src="./screenshot1.gif" alt="metro thumbnail" width="100%" />
+  <img src="./assets/screenshot1.gif" alt="metro thumbnail" width="100%" />
 </a>
 
 <br>
